@@ -1,0 +1,6 @@
+[submodule "animatedgifencoder"]
+	path = animatedgifencoder
+	url = https://github.com/madmaw/animatedgifencoder.git
+[submodule "wizzardoTools"]
+	path = wizzardoTools
+	url = https://github.com/wizzardo/Tools.git
