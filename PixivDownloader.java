@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package pixivdownloader;
 
 import com.wizzardo.tools.http.HttpSession;
@@ -46,7 +40,6 @@ public class PixivDownloader {
         JsonArray frames = json.get("frames").asJsonArray();
         
        
-        //String newUrl = data.substring(data.indexOf("\"src\":\"") + "\"src\":\"".length(), data.indexOf("\",\"mime_type\":")).replace("\\/", "/");
         session.setHeader("Referer", url);
         File newFile = new File(newUrl.substring(newUrl.lastIndexOf("/") + 1));
 
@@ -90,9 +83,7 @@ public class PixivDownloader {
         System.out.println("saved file: '" + outDir.getPath() + ".gif" + "'");
         
     }
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String[] args) throws Exception {
         PixivDownloader downloader = new PixivDownloader();
         downloader.downloadUrl(args[0]);
