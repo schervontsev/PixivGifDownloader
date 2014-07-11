@@ -7,6 +7,7 @@ Script gets in first argument link to pixiv page with animation and creates a gi
 === Usage ===
 
 Just launch jar file with link to animation page in description.
+
 java -jar PixivDownloader.jar "http://www.pixiv.net/member_illust.php?mode=medium&illust_id=44339903"
 
 I also placed compiled jar in bin folder with cmd file for Windows (start.bat). Just change the link inside and launch it.
