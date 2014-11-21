@@ -15,8 +15,11 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
+
+import com.wizzardo.tools.json.JsonTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import animatedgifencoder.AnimatedGIFEncoder;
 
 /**
  *
@@ -29,18 +32,18 @@ public class PixivDownloader {
     void downloadUrl(String url) throws Exception {
         session = new HttpSession();
         session.maxRetryCount(10);
-        session.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0");
+        session.header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0");
         
         Document doc = Jsoup.parse(session.createRequest(url).get().asString("UTF-8"));
         String data = doc.select("script#template-show-work-more-register-text").first().previousElementSibling().data();
         
-        JsonObject json = JsonObject.parse(data.substring(data.indexOf("{"), data.lastIndexOf(";"))).asJsonObject();
-        
+        JsonObject json = JsonTools.parse(data.substring(data.indexOf("pixiv.context.ugokuIllustData  = {") + "pixiv.context.ugokuIllustData  = ".length(), data.lastIndexOf(";"))).asJsonObject();
+
         String newUrl = json.get("src").asString();
         JsonArray frames = json.get("frames").asJsonArray();
         
        
-        session.setHeader("Referer", url);
+        session.header("Referer", url);
         File newFile = new File(newUrl.substring(newUrl.lastIndexOf("/") + 1));
 
         FileOutputStream fos = new FileOutputStream(newFile);
@@ -69,15 +72,17 @@ public class PixivDownloader {
             nfos.close();   
             ze = zis.getNextEntry();
         }
-        
-        AnimatedGifEncoder e = new AnimatedGifEncoder();
+
+        AnimatedGIFEncoder e = new AnimatedGIFEncoder();
         e.start(outDir.getPath() + ".gif");
         e.setRepeat(0);
         for (JsonItem it : frames) {
             BufferedImage img = ImageIO.read(new File(outDir.getPath() + File.separator + it.asJsonObject().get("file").asString()));
             
             e.setDelay(it.asJsonObject().get("delay").asInteger());
-            e.addFrame(img);
+            int[] pixels = new int[img.getWidth() * img.getHeight()];
+            img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+            e.addFrame(pixels, img.getWidth(), img.getHeight());
         }
         e.finish();
         System.out.println("saved file: '" + outDir.getPath() + ".gif" + "'");
