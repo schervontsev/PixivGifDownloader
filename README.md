@@ -1,3 +1,5 @@
+Warning: doesn't compile on java 1.7 or newer, use 1.6.
+
 PixivGifDownloader
 ==================
 
